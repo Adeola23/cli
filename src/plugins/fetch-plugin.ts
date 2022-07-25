@@ -35,8 +35,8 @@ export const fetchPlugin = (inputCode: string) => {
 
         const contents = `
           const style = document.createElement('style');
-          style.innerText = '${escaped}'
-          document.head.appendChild(style)
+          style.innerText = '${escaped}';
+          document.head.appendChild(style);
         `;
 
         const result: esbuild.OnLoadResult = {

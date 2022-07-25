@@ -3,13 +3,15 @@ import ReactDOM from 'react-dom/client';
 import { useState, useEffect, useRef } from 'react';
 import * as esbuild from 'esbuild-wasm';
 import { fetchPlugin } from './plugins/fetch-plugin';
+import CodeEditor from './components/code-editor';
 
 import reportWebVitals from './reportWebVitals';
 import { unpkgPathPlugin } from './plugins/unpkg-path-plugin';
 const App = () => {
   const [input, setInput] = useState('');
-  const [code, setCode] = useState('');
+ 
   const ref = useRef<any>();
+  const iframe = useRef<any>()
 
   const startService = async () => {
     ref.current = await esbuild.startService({
@@ -26,6 +28,8 @@ const App = () => {
     if (!ref.current) {
       return;
     }
+
+    iframe.current.srcdoc = html
     const result = await ref.current.build({
       entryPoints: ['index.js'],
       bundle: true,
@@ -39,18 +43,37 @@ const App = () => {
       // target: 'es2015',
     });
 
-    setCode(result.outputFiles[0].text);
-
-    try {
-      eval(result.outputFiles[0].text);
-    } catch (error) {
-      alert(error)
-    }
+    //setCode(result.outputFiles[0].text);
+    iframe.current.contentWindow.postMessage(result.outputFiles[0].text, '*')
 
     console.log(result);
   };
+  //event object coming from the parent property
+  const html = `
+     <html>
+     <body>
+        <div id="root">
+        <script>
+            window.addEventListener('message', (event)=> {
+              try{
+                eval(event.data)
+
+              }catch(err){
+                const root = document.querySelector('#root');
+                root.innerHTML = '<div style="color:red">' + err + '</div>'
+                throw err
+
+              }
+
+            }, false)
+        </script>
+        </div>
+     </body>
+     </html>
+    `;
   return (
     <div>
+      <CodeEditor/>
       <textarea
         value={input}
         onChange={(e) => setInput(e.target.value)}
@@ -60,8 +83,7 @@ const App = () => {
       </div>
 
       <div>
-        <pre>{code}</pre>
-        <iframe src="/test.html"></iframe>
+        <iframe title="code preview" ref={iframe} sandbox="allow-scripts" srcDoc={html} />
       </div>
     </div>
   );
