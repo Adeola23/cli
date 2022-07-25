@@ -1,4 +1,5 @@
-import Editor, { useMonaco } from '@monaco-editor/react';
+import './code-editor.css'
+import Editor from '@monaco-editor/react';
 import prettier from 'prettier';
 import parser from 'prettier/parser-babel';
 import { useRef } from 'react';
@@ -30,14 +31,19 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onChange, initialValue }) => {
       useTabs: false,
       semi: true,
       singleQuote: true,
-    });
-    monacoRef.current.setValue(formatted)
+    }).replace(/\n$/, ''); // removes extra new line at the end 
+    monacoRef.current.setValue(formatted);
     console.log(monacoRef.current);
   };
 
   return (
-    <div>
-      <button onClick={onFormatClick}>Format</button>
+    <div className='editor-wrapper'>
+      <button
+        className="button button-format is-primary is-small"
+        onClick={onFormatClick}
+      >
+        Format
+      </button>
       <Editor
         theme="vs-dark"
         language="javascript"
