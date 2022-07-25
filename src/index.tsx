@@ -73,7 +73,10 @@ const App = () => {
     `;
   return (
     <div>
-      <CodeEditor/>
+      <CodeEditor
+        initialValue="const a = 1"
+        onChange={(value) => setInput(value)}
+      />
       <textarea
         value={input}
         onChange={(e) => setInput(e.target.value)}
@@ -83,7 +86,12 @@ const App = () => {
       </div>
 
       <div>
-        <iframe title="code preview" ref={iframe} sandbox="allow-scripts" srcDoc={html} />
+        <iframe
+          title="code preview"
+          ref={iframe}
+          sandbox="allow-scripts"
+          srcDoc={html}
+        />
       </div>
     </div>
   );
