@@ -1,10 +1,8 @@
-import React from 'react';
-
 import { useState } from 'react';
 import bundle from '../bundler';
-
 import CodeEditor from './code-editor';
 import Preview from './preview';
+import Resizable from './resizable';
 
 const CodeCell = () => {
   const [input, setInput] = useState('');
@@ -18,28 +16,22 @@ const CodeCell = () => {
   //event object coming from the parent property
 
   return (
-    <div>
-      <CodeEditor
-        initialValue="const a = 1"
-        onChange={(value) => setInput(value)}
-      />
-      <textarea
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-      ></textarea>
-      <div>
-        <button onClick={onClick}>Submit</button>
-      </div>
+    <Resizable direction="vertical">
+      <div style={{ height: '100%', display: 'flex', flexDirection: 'row' }}>
+        <Resizable direction="horizontal">
+          <CodeEditor
+            initialValue="const a = 1"
+            onChange={(value) => setInput(value)}
+          />
+        </Resizable>
 
-      <div>
         <Preview code={code} />
       </div>
-    </div>
+    </Resizable>
   );
 };
 
-
-export default CodeCell
+export default CodeCell;
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
