@@ -2,12 +2,19 @@ import MarkdownEditor from '@uiw/react-markdown-editor';
 import React from 'react';
 import './text-editor.css';
 import { useState, useEffect, useRef } from 'react';
+import { Cell } from '../state';
+import { useActions } from '../hooks/use-actions';
+
+interface TextEditorProps {
+  cell: Cell;
+}
 
 const code = `# title\n\nHello World!\n\n`;
-const TextEditor: React.FC = () => {
+const TextEditor: React.FC<TextEditorProps> = ({ cell }) => {
   const [editing, setEditing] = useState(false);
   const [markdownVal, setMarkdownVal] = useState(code);
   const ref = useRef<HTMLDivElement | null>(null);
+  const { updateCell } = useActions();
 
   useEffect(() => {
     const listener = (event: MouseEvent) => {
@@ -30,11 +37,11 @@ const TextEditor: React.FC = () => {
   if (editing) {
     return (
       <div ref={ref} className="text-editor card">
-        <div className='card-content'>
+        <div className="card-content">
           <MarkdownEditor
-            value={markdownVal}
+            value={cell.content }
             onChange={(value) => {
-              setMarkdownVal(value);
+              updateCell(cell.id, value);
             }}
           />
         </div>
@@ -43,12 +50,12 @@ const TextEditor: React.FC = () => {
   }
   return (
     <div onClick={() => setEditing(true)} className="text-editor card">
-      <div className='card-content'>
+      <div className="card-content">
         <MarkdownEditor
-          value={markdownVal}
+          value={cell.content || 'click to edit'}
           visible={true}
           onChange={(value) => {
-            setMarkdownVal(value);
+            updateCell(cell.id, value);
           }}
         />
       </div>
