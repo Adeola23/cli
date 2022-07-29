@@ -25,10 +25,7 @@ export const deleteCell = (id: string): DeleteCellAction => {
   };
 };
 
-export const moveCell = (
-  id: string,
-  direction: Direction,
-): MoveCellAction => {
+export const moveCell = (id: string, direction: Direction): MoveCellAction => {
   return {
     type: ActionType.MOVE_CELL,
     payload: {
@@ -38,8 +35,8 @@ export const moveCell = (
   };
 };
 
-export const inserCellBefore = (
-  id: string,
+export const insertCellBefore = (
+  id: string | null,
   cellType: CellTypes,
 ): InsertCellAction => {
   return {
